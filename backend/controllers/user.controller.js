@@ -1,4 +1,5 @@
 
+// import { use } from "react";
 import Profile from "../models/profile.model.js";
 import User from "../models/user.model.js";
 import bycrypt from "bcrypt";
@@ -60,5 +61,25 @@ export const login = async(req,res)=>{
      return res.json({token});
    }catch(err){
       return res.status(500).json({message: err.message});
+   }
+};
+
+
+export const uploadProfilePicture = async(req,res)=>{
+   const {token} = req.body;
+
+   try{
+      const user = await User.findOne({token: token});
+      if(!user){
+         return res.status(404).json({message:"User Not Found"});
+      }
+
+      user.profilePicture = req.file.filename;
+
+      await user.save();
+
+      return res.json({message : "Profile picture updated"});
+   }catch(err){
+      return res.status(400).json({message: err.message});
    }
 }
