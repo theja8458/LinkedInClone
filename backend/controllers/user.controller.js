@@ -1,5 +1,4 @@
 
-// import { use } from "react";
 import Profile from "../models/profile.model.js";
 import User from "../models/user.model.js";
 import bycrypt from "bcrypt";
@@ -30,6 +29,8 @@ export const register = async(req,res)=>{
      const profile = new Profile({
         userId: newUser._id
      });
+
+     await profile.save();
 
      return res.json({message: "User registered successfully :)"});
 
@@ -81,5 +82,52 @@ export const uploadProfilePicture = async(req,res)=>{
       return res.json({message : "Profile picture updated"});
    }catch(err){
       return res.status(400).json({message: err.message});
+   }
+}
+
+export const updateUserProfile = async (req,res)=>{
+    try{
+
+      const {token , ...newUserData} = req.body;
+
+      const user = await User.findOne({token: token});
+
+      if(!user) return res.status(404).json({message: "User does not exist"});
+
+      const {username , email} = newUserData;
+
+      const existingUser = await User.findOne({$or : [{username} , {email}]});
+
+      if(existingUser){
+         if(existingUser || String(existingUser._id) !== String(user._id)){
+            return res.status(400).json({message: "User already exists"});
+         }
+      }
+      
+      Object.assign(user,newUserData);
+
+      await user.save();
+      return res.json({message: "User updated"});
+
+    }catch(err){
+      return res.status(500).json({message: err.message});
+    }
+};
+
+
+export const getUserAndProfile = async(req,res)=>{
+   try{
+      const {token} = req.body;
+
+      const user = await User.findOne({token: token});
+       if(!user) return res.status(404).json({message: "User does not exist"});
+      
+       const userProfile = await Profile.findOne({userId: user._id})
+       .populate('userId','name email username profilePicture');
+
+       return res.json(userProfile);
+
+   }catch(err){
+      return res.status(500).json({message: err.message});
    }
 }
