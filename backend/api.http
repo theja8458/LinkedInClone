@@ -3,10 +3,10 @@ POST http://localhost:9090/register
 Content-Type: application/json
 
 {
-  "username": "test_user01",
-  "password": "Test@1234",
-  "email": "test.user01@example.com",
-  "name": "Test User"
+  "username": "test_user02",
+  "password": "Test@12345",
+  "email": "test.user02@example.com",
+  "name": "Test User2"
 }
 
 
@@ -20,13 +20,55 @@ content-Type: application/json
     
     
 }
+
+###
+POST http://localhost:9090/login HTTP/1.1
+content-Type: application/json
+
+{
+    "email": "test.user02@example.com",
+    "password": "Test@12345"
+    
+    
+}
 ###
 
 Get http://localhost:9090/get_user_and_profile HTTP/1.1
 content-Type: application/json
 
 {
-   "token": "980fab10aa774529e1f9af5b7d30a3b28bfe7a7e10043e51927a4bc7ede24b67"
+   "token": "db8eedea080c2b4ac75b99abbda2375aa56ecdc9816f58bd6ad653c0e6b16656"
     
     
 }
+
+###
+POST http://localhost:9090/update_profile_data HTTP/1.1
+content-Type: application/json
+
+{
+   "token": "58e959d057d8021ce7af1e251bf2b2ced57f5f75b2eb73e09172d1dc1cee4ece",
+   "bio":"",
+   "currentPost": "CTO",
+   "pastwork":[
+    {
+      "company": "Microsoft",
+      "position": "CTO",
+      "years": "2+"
+    }
+   ],
+   "education":[
+    {
+      "school":"III",
+      "degree": "BCA",
+      "fieldOfStudy": "2022-2025"
+    }
+   ]
+    
+};
+
+###
+
+Get http://localhost:9090/user/get_all_user_profiles 
+
+

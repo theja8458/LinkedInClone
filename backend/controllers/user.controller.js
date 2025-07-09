@@ -3,7 +3,13 @@ import Profile from "../models/profile.model.js";
 import User from "../models/user.model.js";
 import bycrypt from "bcrypt";
 import crypto from "crypto";
+import PDFDocument from "pdfkit";
 
+const convertUserDataTOPDF = async(userData)=>{
+   const doc = new PDFDocument();
+
+   const ouputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
+}
 export const register = async(req,res)=>{
     try{
      const {name,email,password,username} = req.body;
@@ -130,4 +136,55 @@ export const getUserAndProfile = async(req,res)=>{
    }catch(err){
       return res.status(500).json({message: err.message});
    }
+};
+
+
+export const updateProfileData = async (req,res)=>{
+   try{
+
+      const {token , ...newUserData} = req.body;
+
+      const userProfile = await User.findOne({token:token});
+
+      if(!userProfile){
+         res.status(404).json({message: "User does not exist"});
+      }
+     
+      const profile_to_update = await Profile.findOne({userId: userProfile._id});
+
+      Object.assign(profile_to_update, newUserData);
+
+        await profile_to_update.save();
+      return res.json({message: "Profile updated"});
+   }catch(err){
+       return res.status(500).json({message: err.message});
+   }
+};
+
+export const getAllUserProfiles = async (req,res)=>{
+   try{
+      const profiles = await Profile.find().populate("userId" , "name username email profilePicture");
+
+      return res.json({profiles});
+    
+   }catch(err){
+     return res.status(500).json({message: err.message});
+   }
+};
+
+export const downloadProfile = async(req,res)=>{
+   // try{
+      
+   // }catch(err){
+   //     return res.status(500).json({message: err.message});
+   // }
+
+   const user_id = req.query.id;
+
+   const userProfile = await Profile.findOne({userId: user_id})
+   .populate("userId" , "name username email profilePicture");
+
+   let a = await convertUserDataTOPDF(userProfile);
+
+   return res.json({message: a});
 }
