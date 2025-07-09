@@ -9,12 +9,11 @@ dotenv.config();
 
 const app = express();
 
-
+app.use(express.json());
 app.use(cors());
 app.use(postsRoutes);
 app.use(userRoutes);
 
-app.use(express.json());
 
 const start  = async()=>{
    const connectDB = await mongoose.connect("mongodb+srv://sugamanch:x2LXfyHuzjcZEPcp@apnaproconnect.2feddwo.mongodb.net/?retryWrites=true&w=majority&appName=apnaproconnect");

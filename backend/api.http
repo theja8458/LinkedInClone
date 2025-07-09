@@ -1,0 +1,10 @@
+
+POST http://localhost:9090/login HTTP/1.1
+content-Type: application/json
+
+{
+    "email": "tejan@example.com",
+    "password": "mypassword12"
+    
+    
+}
