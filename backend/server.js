@@ -14,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(postsRoutes);
 app.use(userRoutes);
+app.use(express.static("uploads"));
 
 
 const start  = async()=>{

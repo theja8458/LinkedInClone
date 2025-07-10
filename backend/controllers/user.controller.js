@@ -4,11 +4,35 @@ import User from "../models/user.model.js";
 import bycrypt from "bcrypt";
 import crypto from "crypto";
 import PDFDocument from "pdfkit";
+import fs from "fs";
 
 const convertUserDataTOPDF = async(userData)=>{
    const doc = new PDFDocument();
 
-   const ouputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
+   const outputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
+   const stream = fs.createWriteStream("uploads/"+ outputPath);
+
+   doc.pipe(stream);
+
+   doc.image(`uploads/${userData.userId.profilePicture}` , {align : "center" , width: 100} )
+   doc.fontSize(14).text(`Name : ${userData.userId.name}`);
+   doc.fontSize(14).text(`Username : ${userData.userId.username}`);
+   doc.fontSize(14).text(`Email : ${userData.userId.email}`);
+   doc.fontSize(14).text(`Bio : ${userData.bio}`);
+   doc.fontSize(14).text(`Current Position : ${userData.currentPost}`);
+
+   doc.fontSize(14).text(`Past Work: `)
+   userData.pastwork.forEach((work , index)=>{
+      doc.fontSize(14).text(`Company Name : ${work.company}`);
+      doc.fontSize(14).text(`Postion : ${work.position}`);
+      doc.fontSize(14).text(`Years : ${work.years}`);
+
+   })
+
+   doc.end();
+
+   return outputPath;
+
 }
 export const register = async(req,res)=>{
     try{
@@ -184,7 +208,8 @@ export const downloadProfile = async(req,res)=>{
    const userProfile = await Profile.findOne({userId: user_id})
    .populate("userId" , "name username email profilePicture");
 
-   let a = await convertUserDataTOPDF(userProfile);
+   let outputPath = await convertUserDataTOPDF(userProfile);
 
-   return res.json({message: a});
+
+   return res.json({message: outputPath});
 }
