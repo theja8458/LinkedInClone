@@ -1,6 +1,7 @@
 
 import Profile from "../models/profile.model.js";
 import User from "../models/user.model.js";
+import ConnectionRequest from "../models/connections.model.js";
 import bycrypt from "bcrypt";
 import crypto from "crypto";
 import PDFDocument from "pdfkit";
@@ -212,4 +213,110 @@ export const downloadProfile = async(req,res)=>{
 
 
    return res.json({message: outputPath});
+};
+
+export const sentRequestConnection =async (req,res)=>{
+   const{token , connectionId} = req.body;
+   
+   try{
+    
+      const user = await User.findOne({token:token});
+
+      if(!user){
+         return res.status(404).json({message: "User does not exists"});
+      }
+
+      const connectionUser = await User.findOne({_id: connectionId});
+      if(!connectionUser){
+         return res.status(404).json({message: "Connection user not found"});
+      }
+
+      const existingRequest = await ConnectionRequest.findOne({userId: user._id,connectionId: connectionUser._id});
+
+      if(existingRequest){
+         return res.status(400).json({message: "Request already exists"});
+      }
+
+       const request = new ConnectionRequest({
+         userId: user._id,
+         connectionId: connectionUser._id
+       });
+
+       await request.save();
+
+       return res.json({message: "Request sent"});
+   }catch(err){
+       return res.status(500).json({message: err.message});
+   }
+};
+
+
+export const getMyConnectionsRequest = async(req,res)=>{
+
+   const {token} = req.body;
+   try{
+     const user = await User.findOne({token: token});
+     if(!user){
+         return res.status(404).json({message: "User does not exists"});
+      };
+     
+      const connections = await ConnectionRequest.find({userId: user._id})
+      .populate('connectionId' , 'name username email profilePicture');
+
+      return res.json({connections});
+      
+
+   }catch(err){
+      return res.status(500).json({message: err.message});
+   }
+};
+
+
+
+export const whatAreMyConnections = async (req,res)=>{
+   const {token} = req.body;
+
+   try{
+      
+      const user = await User.findOne({token: token});
+      if(!user){
+         return res.status(404).json({message: "User does not exists"});
+      };
+
+      const connections = await ConnectionRequest.find({connectionId: user._id})
+      .populate("userId" , "name username email profilePicture");
+
+      return res.json(connections);
+
+
+   }catch(err){
+       return res.status(500).json({message: err.message});
+   }
+};
+
+
+export const acceptConnectionRequest = async (req,res)=>{
+   
+      const {token , requestId , action_type} = req.body;
+      try{
+        const user = await User.findOne({token: token});
+         if(!user){
+         return res.status(404).json({message: "User does not exists"});
+      };
+
+      const connection = await ConnectionRequest.findOne({_id : requestId});
+
+      if(action_type === "accept"){
+         connection.status_accepted = true;
+      }else{
+         connection.action_type = false;
+      }
+
+      await connection.save();
+
+      return res.json({message: "Request updated"});
+
+      }catch(err){
+         return res.status(500).json({message: err.message});
+      }
 }
