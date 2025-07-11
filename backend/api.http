@@ -37,7 +37,7 @@ Get http://localhost:9090/get_user_and_profile HTTP/1.1
 content-Type: application/json
 
 {
-   "token": "db8eedea080c2b4ac75b99abbda2375aa56ecdc9816f58bd6ad653c0e6b16656"
+   "token": "dcaeddcb23d4aa2dcf7eb130978cf089590b1941f8d62243464a6f04ddfe3187"
     
     
 }

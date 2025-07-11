@@ -11,7 +11,7 @@ const PostSchema = mongoose.Schema({
     },
     likes:{
      type: Number,
-     required: true
+    //  required: true
 
     },
     createdAt:{
