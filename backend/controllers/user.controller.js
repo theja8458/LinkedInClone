@@ -1,6 +1,7 @@
 
 import Profile from "../models/profile.model.js";
 import User from "../models/user.model.js";
+import Post from "../models/posts.model.js";
 import ConnectionRequest from "../models/connections.model.js";
 import bycrypt from "bcrypt";
 import crypto from "crypto";
@@ -319,4 +320,9 @@ export const acceptConnectionRequest = async (req,res)=>{
       }catch(err){
          return res.status(500).json({message: err.message});
       }
-}
+};
+
+
+
+
+

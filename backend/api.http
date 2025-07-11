@@ -73,3 +73,14 @@ Get http://localhost:9090/user/get_all_user_profiles
 
 ###
 Get http://localhost:9090/posts HTTP/1.1
+###
+
+POST http://localhost:9090/delete_post HTTP/1.1
+content-Type: application/json
+
+{
+   "token": "670390736440879178a4220362c81c4911fb183ec3f7dddfacac4c9bb2a0dfb6",
+   "post_id":"68709368a946bd00a7dbdbd2"
+    
+    
+}
