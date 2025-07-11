@@ -71,4 +71,5 @@ content-Type: application/json
 
 Get http://localhost:9090/user/get_all_user_profiles 
 
-
+###
+Get http://localhost:9090/posts HTTP/1.1
