@@ -91,7 +91,7 @@ export const login = async(req,res)=>{
 
      await User.updateOne({_id: user._id , }, {token });
 
-     return res.json({token});
+     return res.json({token : token});
    }catch(err){
       return res.status(500).json({message: err.message});
    }
