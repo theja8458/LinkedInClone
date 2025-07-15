@@ -149,7 +149,7 @@ export const updateUserProfile = async (req,res)=>{
 
 export const getUserAndProfile = async(req,res)=>{
    try{
-      const {token} = req.body;
+      const {token} = req.query;
 
       const user = await User.findOne({token: token});
        if(!user) return res.status(404).json({message: "User does not exist"});
@@ -157,7 +157,7 @@ export const getUserAndProfile = async(req,res)=>{
        const userProfile = await Profile.findOne({userId: user._id})
        .populate('userId','name email username profilePicture');
 
-       return res.json(userProfile);
+       return res.json({userProfile});
 
    }catch(err){
       return res.status(500).json({message: err.message});
