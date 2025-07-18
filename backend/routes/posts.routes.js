@@ -19,7 +19,7 @@ router.route("/").get(runningCheck);
 
 router.route("/post").post(upload.single('media'), createPost);
 router.route("/posts").get(getAllPosts);
-router.route("/delete_post").post(deletePost);
+router.route("/delete_post").delete(deletePost);
 router.route("/comment").post(commentPost);
 router.route("/get_commens").get(get_comments_by_post);
 router.route("/delete_comment").delete(delete_comment_of_user);
