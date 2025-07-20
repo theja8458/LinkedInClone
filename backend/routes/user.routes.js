@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register,login,uploadProfilePicture , updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest} from "../controllers/user.controller.js";
+import { register,login,uploadProfilePicture , updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest, getUserProfileAndUserBasesOnUsername} from "../controllers/user.controller.js";
 import multer from "multer";
 // import { file } from "pdfkit";
 
@@ -30,4 +30,5 @@ router.route("/user/send_connection_request").post(sentRequestConnection);
 router.route("/user/getConnectionRequests").get(getMyConnectionsRequest);
 router.route("/user/user_connection_requests").get(whatAreMyConnections);
 router.route("/user/accept_connection_request").post(acceptConnectionRequest);
+router.route("/user/get_profile_based_on_username").get(getUserProfileAndUserBasesOnUsername)
 export default router;

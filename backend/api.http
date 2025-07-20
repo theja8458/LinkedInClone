@@ -47,8 +47,8 @@ POST http://localhost:9090/update_profile_data HTTP/1.1
 content-Type: application/json
 
 {
-   "token": "bbefc8a993c57879e7d4cea67318a67dcf96959bf7574190687b05fb88d39f10",
-   "bio":"",
+   "token": "9fad0f17af9124c291f780c7c210b0b02f3a1aafd4460af72f117267215bcabc",
+   "bio":"Hii I am Theja , I love Coding",
    "currentPost": "CTO",
    "pastwork":[
     {

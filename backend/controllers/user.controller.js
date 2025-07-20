@@ -1,5 +1,5 @@
 
-import Profile from "../models/profile.model.js";
+import Profile from "../models/profile.model.js"
 import User from "../models/user.model.js";
 import Post from "../models/posts.model.js";
 import ConnectionRequest from "../models/connections.model.js";
@@ -254,7 +254,7 @@ export const sentRequestConnection =async (req,res)=>{
 
 export const getMyConnectionsRequest = async(req,res)=>{
 
-   const {token} = req.body;
+   const {token} = req.query;
    try{
      const user = await User.findOne({token: token});
      if(!user){
@@ -322,6 +322,28 @@ export const acceptConnectionRequest = async (req,res)=>{
       }
 };
 
+export const getUserProfileAndUserBasesOnUsername = async(req,res)=>{
+     const{username} = req.query;
+     try{
+
+      const user = await User.findOne({
+         username: username
+      });
+      if(!user){
+         return res.status(404).json({message: "User not found"});
+      }
+
+      const userProfile = await Profile.findOne({
+         userId: user._id,
+      })
+      .populate('userId','name username email profilePicture');
+
+      return res.json({"profile": userProfile});
+
+     }catch(err){
+      return res.status(500).json({message: err.message});
+     }
+}
 
 
 
