@@ -207,13 +207,15 @@ export const downloadProfile = async(req,res)=>{
 
    const user_id = req.query.id;
 
+   // return res.json({"message": "Not implemented"});
+
    const userProfile = await Profile.findOne({userId: user_id})
    .populate("userId" , "name username email profilePicture");
 
    let outputPath = await convertUserDataTOPDF(userProfile);
 
 
-   return res.json({message: outputPath});
+   return res.json({message: `uploads/${outputPath}`});
 };
 
 export const sentRequestConnection =async (req,res)=>{
@@ -275,7 +277,7 @@ export const getMyConnectionsRequest = async(req,res)=>{
 
 
 export const whatAreMyConnections = async (req,res)=>{
-   const {token} = req.body;
+   const {token} = req.query;
 
    try{
       
@@ -306,6 +308,10 @@ export const acceptConnectionRequest = async (req,res)=>{
       };
 
       const connection = await ConnectionRequest.findOne({_id : requestId});
+
+      if (!connection) {
+   return res.status(404).json({ message: "Connection request not found" });
+}
 
       if(action_type === "accept"){
          connection.status_accepted = true;
