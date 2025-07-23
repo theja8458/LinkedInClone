@@ -165,26 +165,36 @@ export const getUserAndProfile = async(req,res)=>{
 };
 
 
-export const updateProfileData = async (req,res)=>{
-   try{
+export const updateProfileData = async (req, res) => {
+  try {
+    const { token, ...newUserData } = req.body;
 
-      const {token , ...newUserData} = req.body;
+    const userProfile = await User.findOne({ token: token });
 
-      const userProfile = await User.findOne({token:token});
+    if (!userProfile) {
+      return res.status(404).json({ message: "User does not exist" });
+    }
 
-      if(!userProfile){
-         res.status(404).json({message: "User does not exist"});
-      }
-     
-      const profile_to_update = await Profile.findOne({userId: userProfile._id});
+    // ✅ Save uploaded profile picture to the user
+    if (req.file) {
+      userProfile.profilePicture = req.file.filename;
+      await userProfile.save(); // Must save the user separately
+    }
 
-      Object.assign(profile_to_update, newUserData);
+    // ✅ Update profile details (bio, pastwork, etc.)
+    const profile_to_update = await Profile.findOne({ userId: userProfile._id });
 
-        await profile_to_update.save();
-      return res.json({message: "Profile updated"});
-   }catch(err){
-       return res.status(500).json({message: err.message});
-   }
+    if (!profile_to_update) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    Object.assign(profile_to_update, newUserData);
+    await profile_to_update.save();
+
+    return res.json({ message: "Profile updated" });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 export const getAllUserProfiles = async (req,res)=>{
