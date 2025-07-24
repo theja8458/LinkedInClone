@@ -20,11 +20,11 @@ app.use(userRoutes);
 
 
 const start  = async()=>{
-   const connectDB = await mongoose.connect("mongodb+srv://sugamanch:x2LXfyHuzjcZEPcp@apnaproconnect.2feddwo.mongodb.net/?retryWrites=true&w=majority&appName=apnaproconnect");
+   const connectDB = await mongoose.connect(process.env.MONGO_URI);
  
-    app.listen(9090 , ()=>{
-        console.log("Server is running on port 9090");
-    })
+   app.listen(process.env.PORT || 9090, () => {
+    console.log(`Server is running on port ${process.env.PORT || 9090}`);
+});
 };
 
 start();
