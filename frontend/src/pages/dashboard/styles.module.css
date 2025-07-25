@@ -138,13 +138,13 @@
 }
 .allCommentsContainer{
     /* width: 40vw; */
-    min-width: 80svh;
+    min-width: 40svh;
+    max-width: 1120px;
     height: 80vh;
     background: white;
     border-radius: 10px;
     position: relative;
     padding: 1.4rem;
-    max-width: 1120px;
 }
 .postCommentConatiner{
     position: absolute;
