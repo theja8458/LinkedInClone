@@ -129,7 +129,7 @@
     height: 100vh;
     top: 0;
     left: 0;
-    z-index: 2;
+    z-index: 1000;
     background: rgba(0, 0, 0 , 0.7);
     overflow: hidden;
     display: flex;
@@ -184,7 +184,7 @@
 @media screen and (max-width: 600px) {
     .allCommentsContainer{
         width: 90vw;
-        height: 90vh;
+        height: 80vh;
 
     }
 }
