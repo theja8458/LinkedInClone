@@ -71,14 +71,13 @@ export default function DashboardLayout({children}) {
        <div className={styles.homeContainer_extraContainer}>
           <h3>Top Profiles</h3>
           
-          {authState.all_profiles_fetched && authState.all_users.map((profile) =>{
-            
-            return(
-              <div key={profile._id} className={styles.extraContainer_profile}> 
-                <p>{profile.userId.name}</p>
-              </div>
-            )
-          })}
+          {authState.all_profiles_fetched && authState.all_users.map((profile) => {
+  return (
+    <div key={profile._id} className={styles.extraContainer_profile}>
+      <p>{profile.userId?.name || "Unknown User"}</p>
+    </div>
+  )
+})}
 
           
        </div>
