@@ -138,7 +138,7 @@
 }
 .allCommentsContainer{
     /* width: 40vw; */
-    min-width: 40svh;
+    min-width: 80svh;
     max-width: 1120px;
     height: 80vh;
     background: white;
@@ -184,7 +184,8 @@
 
 @media screen and (max-width: 600px) {
     .allCommentsContainer{
-        width: 90%;
+        width: 80vw;
+        height: 80vh;
 
     }
 }
