@@ -122,31 +122,29 @@ useEffect(()=>{
 
                </div>
 
-               <div style={{flex: "0.2"}}>
-                   <h3>Recent Activity</h3>
-                   {userPost.map((post)=>{
-                    return(
-                      <div key={post._id} className={styles.postCard}>
+               <div style={{ flex: "0.2" }}>
+  <h3>Recent Activity</h3>
+  {userPost.map((post) => {
+    return (
+      <div key={post._id} className={styles.postCard}>
+        <div className={styles.card_profileContainer}>
+          {post.media && (
+            <img
+              src={
+                post.media.startsWith("http")
+                  ? post.media
+                  : `${BASE_URL}/uploads/${post.media}`
+              }
+              alt="Post Media"
+            />
+          )}
+        </div>
+        <p>{post.body}</p>
+      </div>
+    );
+  })}
+</div>
 
-                        <div className={styles.card_profileContainer}>
-
-                         <img
-  src={
-    post.userId.profilePicture?.startsWith("http")
-      ? post.userId.profilePicture
-      : `${BASE_URL}/uploads/${post.userId.profilePicture}`
-  }
-  alt="Profile"
-/>
-
-                        </div>
-                        <p>{post.body}</p>
-                      </div>
-                    )
-                   })}
-
-
-               </div>
 
              </div>
           </div>
