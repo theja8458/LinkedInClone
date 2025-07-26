@@ -88,10 +88,14 @@ export default function Dashboard() {
                   
                  <div className={styles.singleCard_profileContainer}>
                  <img 
-                    src={`${BASE_URL}/uploads/${post.userId.profilePicture}`}
-                    alt="profile"
-                    className={styles.userProfile}
-                  />
+  src={
+    post.userId.profilePicture?.startsWith("http")
+      ? post.userId.profilePicture
+      : `${BASE_URL}/uploads/${post.userId.profilePicture}`
+  }
+  alt="profile"
+  className={styles.userProfile}
+/>
                   <div>
                     <div style={{display: "flex" , gap: "1.2rem" , justifyContent: "space-between"}}>
                        <p style={{fontWeight: "bold"}}>{post.userId.name}</p>
@@ -111,7 +115,16 @@ export default function Dashboard() {
 
  
                    <div className={styles.singleCard_image}>
-                   {post.media !== " "  ?  <img src={`${BASE_URL}/uploads/${post.media}`} alt="postImage" /> : <></>} 
+                   {post.media?.trim() ? (
+  <img
+    src={
+      post.media.startsWith("http")
+        ? post.media
+        : `${BASE_URL}/uploads/${post.media}`
+    }
+    alt="postImage"
+  />
+) : null}
                    </div>
 
                    <div className={styles.optionsContainer}>
@@ -187,9 +200,16 @@ export default function Dashboard() {
                   
                   <div className={styles.singleComment} key={postComments._id}>
                        <div className={styles.singleComment_profileContainer}>
-                        <img  src={`${BASE_URL}/uploads/${postComments.userId.profilePicture}`}
-                    alt="profile"
-                    className={styles.userProfile} />
+                       <img 
+  src={
+    postComments.userId.profilePicture?.startsWith("http")
+      ? postComments.userId.profilePicture
+      : `${BASE_URL}/uploads/${postComments.userId.profilePicture}`
+  }
+  alt="profile"
+  className={styles.userProfile}
+/>
+
                        </div>
                        <br />
                        <div>

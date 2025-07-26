@@ -2,16 +2,17 @@ import { Router } from "express";
 import { runningCheck  , createPost , getAllPosts , deletePost,commentPost , get_comments_by_post , delete_comment_of_user , increment_likes} from "../controllers/posts.controller.js";
 import multer from "multer";
 const router = Router();
+import { cloudinary, storage } from "../cloudConfig.js";
 
+// const storage = multer.diskStorage({
+//   destination: (req,file,cb)=>{
+//     cb(null , "uploads");
+//   },
+//   filename:(req,file,cb)=>{
+//     cb(null , file.originalname);
+//   }
+// });
 
-const storage = multer.diskStorage({
-  destination: (req,file,cb)=>{
-    cb(null , "uploads");
-  },
-  filename:(req,file,cb)=>{
-    cb(null , file.originalname);
-  }
-});
 
 const upload = multer({storage: storage});
 

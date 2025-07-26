@@ -41,7 +41,14 @@ export default function MyConnectionsPage() {
               <div style={{display : "flex" , alignItems: "center" , gap: "1.2rem" , justifyContent: "space-between"}}>
                  <div className={styles.profilePicture}>
                   
-                  <img src={`${BASE_URL}/uploads/${user.userId.profilePicture}`} alt="" />
+                  <img
+  src={
+    user.userId.profilePicture?.startsWith("http")
+      ? user.userId.profilePicture
+      : `${BASE_URL}/uploads/${user.userId.profilePicture}`
+  }
+  alt="profile"
+/>
               </div>
                 <div className={styles.userInfo}>
                 <h1>{user.userId.name}</h1>

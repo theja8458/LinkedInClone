@@ -70,7 +70,16 @@ useEffect(()=>{
         <div className={styles.container}>
 
           <div className={styles.backDropContainer}>
-            <img className={styles.backDrop} src={`${BASE_URL}/uploads/${userProfile.userId.profilePicture}`} alt="" />
+            <img
+  className={styles.backDrop}
+  src={
+    userProfile.userId.profilePicture?.startsWith("http")
+      ? userProfile.userId.profilePicture
+      : `${BASE_URL}/uploads/${userProfile.userId.profilePicture}`
+  }
+  alt="Profile"
+/>
+
           </div>
 
           <div className={styles.profileContainer_details}>
@@ -121,7 +130,14 @@ useEffect(()=>{
 
                         <div className={styles.card_profileContainer}>
 
-                          {post.media !== "" ? <img src={`${BASE_URL}/uploads/${post.media}`} alt="PostImage"></img> : <div style={{width: "3.4rem" , height: "3.4rem"}}></div>}
+                         <img
+  src={
+    post.userId.profilePicture?.startsWith("http")
+      ? post.userId.profilePicture
+      : `${BASE_URL}/uploads/${post.userId.profilePicture}`
+  }
+  alt="Profile"
+/>
 
                         </div>
                         <p>{post.body}</p>

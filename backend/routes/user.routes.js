@@ -1,3 +1,4 @@
+import { cloudinary, storage } from "../cloudConfig.js";
 import { Router } from "express";
 import { register,login,uploadProfilePicture , updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest, getUserProfileAndUserBasesOnUsername} from "../controllers/user.controller.js";
 import multer from "multer";
@@ -5,14 +6,14 @@ import multer from "multer";
 
 const router = Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file , cb)=>{
-        cb(null , "uploads")
-    },
-    filename: (req,file,cb)=>{
-        cb(null , file.originalname);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: (req, file , cb)=>{
+//         cb(null , "uploads")
+//     },
+//     filename: (req,file,cb)=>{
+//         cb(null , file.originalname);
+//     }
+// });
 
 const upload = multer({storage : storage});
 

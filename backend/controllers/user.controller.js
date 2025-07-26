@@ -98,24 +98,25 @@ export const login = async(req,res)=>{
 };
 
 
-export const uploadProfilePicture = async(req,res)=>{
-   const {token} = req.body;
+export const uploadProfilePicture = async (req, res) => {
+  const { token } = req.body;
 
-   try{
-      const user = await User.findOne({token: token});
-      if(!user){
-         return res.status(404).json({message:"User Not Found"});
-      }
+  try {
+    const user = await User.findOne({ token: token });
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
 
-      user.profilePicture = req.file.filename;
+    // ✅ Cloudinary URL
+    user.profilePicture = req.file?.path || "";
 
-      await user.save();
+    await user.save();
 
-      return res.json({message : "Profile picture updated"});
-   }catch(err){
-      return res.status(400).json({message: err.message});
-   }
-}
+    return res.json({ message: "Profile picture updated" });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
 
 export const updateUserProfile = async (req,res)=>{
     try{
@@ -170,18 +171,16 @@ export const updateProfileData = async (req, res) => {
     const { token, ...newUserData } = req.body;
 
     const userProfile = await User.findOne({ token: token });
-
     if (!userProfile) {
       return res.status(404).json({ message: "User does not exist" });
     }
 
-    // ✅ Save uploaded profile picture to the user
+    // ✅ Update profile picture if provided
     if (req.file) {
-      userProfile.profilePicture = req.file.filename;
-      await userProfile.save(); // Must save the user separately
+      userProfile.profilePicture = req.file?.path || "";
+      await userProfile.save();
     }
 
-    // ✅ Update profile details (bio, pastwork, etc.)
     const profile_to_update = await Profile.findOne({ userId: userProfile._id });
 
     if (!profile_to_update) {
@@ -196,6 +195,7 @@ export const updateProfileData = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
 
 export const getAllUserProfiles = async (req,res)=>{
    try{

@@ -113,7 +113,15 @@ const updateProfileData = async()=>{
               <input onChange={(e)=>{
                 updateProfilePicture(e.target.files[0]);
               }} style={{visibility: "hidden"}} type="file" name="" id="profilePirctureUpload" />
-              <img src={`${BASE_URL}/uploads/${userProfile.userId.profilePicture}`} alt="" />
+             <img
+  src={
+    userProfile.userId.profilePicture?.startsWith("http")
+      ? userProfile.userId.profilePicture
+      : `${BASE_URL}/uploads/${userProfile.userId.profilePicture}`
+  }
+  alt="Profile"
+/>
+
           </div>
 
           <div className={styles.profileContainer_details}>
@@ -158,7 +166,19 @@ const updateProfileData = async()=>{
 
                         <div className={styles.card_profileContainer}>
 
-                          {post.media !== "" ? <img src={`${BASE_URL}/uploads/${post.media}`} alt="PostImage"></img> : <div style={{width: "3.4rem" , height: "3.4rem"}}></div>}
+                          {post.media !== "" ? (
+  <img
+    src={
+      post.media.startsWith("http")
+        ? post.media
+        : `${BASE_URL}/uploads/${post.media}`
+    }
+    alt="PostImage"
+  />
+) : (
+  <div style={{ width: "3.4rem", height: "3.4rem" }}></div>
+)}
+
 
                         </div>
                         <p>{post.body}</p>
