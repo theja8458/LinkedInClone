@@ -1,8 +1,8 @@
-import { cloudinary, storage } from "../cloudConfig.js";
 import { Router } from "express";
-import { register,login,uploadProfilePicture , updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest, getUserProfileAndUserBasesOnUsername} from "../controllers/user.controller.js";
+import { register,login,  updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest, getUserProfileAndUserBasesOnUsername} from "../controllers/user.controller.js";
 import multer from "multer";
 // import { file } from "pdfkit";
+import { cloudinary, storage } from "../cloudConfig.js";
 
 const router = Router();
 
@@ -15,10 +15,9 @@ const router = Router();
 //     }
 // });
 
-const upload = multer({storage : storage});
+const upload = multer({storage});
+// console.log("🚀 Cloudinary Storage Middleware:", storage);
 
-router.route("/update_profile_picture")
-.post(upload.single("profile_picture") , uploadProfilePicture);
 
 router.route("/register").post(register);
 router.route("/login").post(login);
