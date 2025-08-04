@@ -191,7 +191,6 @@ export default function Dashboard() {
                     alt="profile"
                     className={styles.userProfile} />
                        </div>
-                       <br />
                        <div>
                        <p style={{fontWeight: "bold" , fontSize: "1.2rem"}}>{postComments.userId.name}</p>
                        <p>@{postComments.userId.username}</p>

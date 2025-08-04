@@ -41,16 +41,11 @@ export default function MyConnectionsPage() {
               <div style={{display : "flex" , alignItems: "center" , gap: "1.2rem" , justifyContent: "space-between"}}>
                  <div className={styles.profilePicture}>
                   
-                  <img
-  src={
-       user.userId.profilePicture
-  }
-  alt="profile"
-/>
+                  <img src={user.userId.profilePicture}/>
               </div>
                 <div className={styles.userInfo}>
                 <h1>{user.userId.name}</h1>
-                <p>{user.userId.username}</p>
+                <p>@{user.userId.username}</p>
               </div>
 
               <button onClick={(e)=>{
@@ -82,11 +77,11 @@ export default function MyConnectionsPage() {
               <div style={{display : "flex" , alignItems: "center" , gap: "1.2rem" , justifyContent: "space-between"}}>
                  <div className={styles.profilePicture}>
                   
-                  <img src={`${BASE_URL}/uploads/${user.userId.profilePicture}`} alt="" />
+                  <img src={user.userId.profilePicture} alt="" />
               </div>
                 <div className={styles.userInfo}>
                 <h1>{user.userId.name}</h1>
-                <p>{user.userId.username}</p>
+                <p>@{user.userId.username}</p>
               </div>
                  </div>
               </div>

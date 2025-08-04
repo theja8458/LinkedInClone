@@ -31,7 +31,7 @@ export const convertUserDataTOPDF = async (userData) => {
         align: "center",
       });
     } else {
-      doc.image(`uploads/${userData.userId.profilePicture}`, 250, 30, {
+      doc.image(`${userData.userId.profilePicture}`, 250, 30, {
         fit: [100, 100],
         align: "center",
       });
