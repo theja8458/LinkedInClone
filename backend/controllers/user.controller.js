@@ -7,35 +7,48 @@ import bycrypt from "bcrypt";
 import crypto from "crypto";
 import PDFDocument from "pdfkit";
 import fs from "fs";
+import axios from "axios";
 
-const convertUserDataTOPDF = async(userData)=>{
-   const doc = new PDFDocument();
+const convertUserDataTOPDF = async (userData) => {
+  const doc = new PDFDocument();
+  const outputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
+  const stream = fs.createWriteStream("uploads/" + outputPath);
+  doc.pipe(stream);
+  const isCloudinary = userData.userId.profilePicture?.startsWith("http");
+  try {
+    if (isCloudinary) {
+      const response = await axios.get(userData.userId.profilePicture, {
+        responseType: "arraybuffer",
+      });
 
-   const outputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
-   const stream = fs.createWriteStream("uploads/"+ outputPath);
+      const imageBuffer = Buffer.from(response.data, "binary");
+      doc.image(imageBuffer, { align: "center", width: 100 });
+    } else {
+      doc.image(`uploads/${userData.userId.profilePicture}`, {
+        align: "center",
+        width: 100,
+      });
+    }
+  } catch (err) {
+    console.warn("⚠️ Failed to load profile picture for PDF:", err.message);
+  }
 
-   doc.pipe(stream);
+  doc.fontSize(14).text(`Name : ${userData.userId.name}`);
+  doc.fontSize(14).text(`Username : ${userData.userId.username}`);
+  doc.fontSize(14).text(`Email : ${userData.userId.email}`);
+  doc.fontSize(14).text(`Bio : ${userData.bio}`);
+  doc.fontSize(14).text(`Current Position : ${userData.currentPost}`);
+  doc.fontSize(14).text(`Past Work:`);
 
-   doc.image(`uploads/${userData.userId.profilePicture}` , {align : "center" , width: 100} )
-   doc.fontSize(14).text(`Name : ${userData.userId.name}`);
-   doc.fontSize(14).text(`Username : ${userData.userId.username}`);
-   doc.fontSize(14).text(`Email : ${userData.userId.email}`);
-   doc.fontSize(14).text(`Bio : ${userData.bio}`);
-   doc.fontSize(14).text(`Current Position : ${userData.currentPost}`);
+  userData.pastwork.forEach((work) => {
+    doc.fontSize(14).text(`Company Name : ${work.company}`);
+    doc.fontSize(14).text(`Position : ${work.position}`);
+    doc.fontSize(14).text(`Years : ${work.years}`);
+  });
 
-   doc.fontSize(14).text(`Past Work: `)
-   userData.pastwork.forEach((work , index)=>{
-      doc.fontSize(14).text(`Company Name : ${work.company}`);
-      doc.fontSize(14).text(`Postion : ${work.position}`);
-      doc.fontSize(14).text(`Years : ${work.years}`);
-
-   })
-
-   doc.end();
-
-   return outputPath;
-
-}
+  doc.end();
+  return outputPath;
+};
 export const register = async(req,res)=>{
     try{
      const {name,email,password,username} = req.body;
@@ -98,25 +111,6 @@ export const login = async(req,res)=>{
 };
 
 
-export const uploadProfilePicture = async (req, res) => {
-  const { token } = req.body;
-
-  try {
-    const user = await User.findOne({ token: token });
-    if (!user) {
-      return res.status(404).json({ message: "User Not Found" });
-    }
-
-    // ✅ Cloudinary URL
-    user.profilePicture = req.file?.path || "";
-
-    await user.save();
-
-    return res.json({ message: "Profile picture updated" });
-  } catch (err) {
-    return res.status(400).json({ message: err.message });
-  }
-};
 
 export const updateUserProfile = async (req,res)=>{
     try{
@@ -165,36 +159,94 @@ export const getUserAndProfile = async(req,res)=>{
    }
 };
 
-
 export const updateProfileData = async (req, res) => {
+    console.log("⚙️ Controller hit: updateProfileData"); // ✅ Add this
+  console.log("Headers:", req.headers); // See if it's multipart/form-data
+  console.log("📦 Received File:", req.file); // ← This should work if multer runs
+  console.log("📨 Body:", req.body);
   try {
     const { token, ...newUserData } = req.body;
 
-    const userProfile = await User.findOne({ token: token });
+    // 🛡️ Find the user based on token
+    const userProfile = await User.findOne({ token });
     if (!userProfile) {
       return res.status(404).json({ message: "User does not exist" });
     }
 
-    // ✅ Update profile picture if provided
-    if (req.file) {
-      userProfile.profilePicture = req.file?.path || "";
-      await userProfile.save();
-    }
+    console.log("📦 Received File:", req.file);
+console.log("📨 Body:", req.body);    
+    
+     if (req.file) {
+  // multer-storage-cloudinary gives `path` or `url`
+  const cloudinaryUrl = req.file.path || req.file.url;
 
+  if (cloudinaryUrl) {
+    userProfile.profilePicture = cloudinaryUrl;
+    await userProfile.save();
+  }
+}
+
+    // ✅ Safely Parse Arrays from Stringified FormData
+    ["pastwork", "education"].forEach((field) => {
+      if (typeof newUserData[field] === "string") {
+        try {
+          const parsed = JSON.parse(newUserData[field]);
+
+          if (Array.isArray(parsed)) {
+            newUserData[field] = parsed;
+          } else {
+            newUserData[field] = [];
+          }
+        } catch (err) {
+          return res.status(400).json({ message: `Invalid format for ${field}` });
+        }
+      }
+    });
+
+    // 📄 Get the user's profile document
     const profile_to_update = await Profile.findOne({ userId: userProfile._id });
-
     if (!profile_to_update) {
       return res.status(404).json({ message: "Profile not found" });
     }
 
+    // 🧠 Merge updated fields (like bio, education, pastwork, etc.)
     Object.assign(profile_to_update, newUserData);
     await profile_to_update.save();
 
-    return res.json({ message: "Profile updated" });
+    // ✅ Return success
+    return res.status(200).json({ message: "Profile updated" });
   } catch (err) {
+    // 🛑 Catch-all error handling
     return res.status(500).json({ message: err.message });
   }
 };
+
+export const updateProfilePicture = async (req, res) => {
+  console.log("⚙️ Controller hit: updateProfilePicture");
+   console.log("Headers:", req.headers); // See if it's multipart/form-data
+  console.log("📦 Received File:", req.file); // ← This should work if multer
+   if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+   }
+   try {
+       const { token } = req.body;
+         const user = await User.findOne({ token: token });
+       if (!user) {
+         return res.status(404).json({ message: "User does not exist" });
+       }
+         // multer-storage-cloudinary gives `path` or `url`
+         const cloudinaryUrl = req.file.path || req.file.url;
+         if (cloudinaryUrl) {
+           user.profilePicture = cloudinaryUrl;
+             await user.save();
+             return res.status(200).json({ message: "Profile picture updated" });
+         }
+         return res.status(400).json({ message: "Failed to update profile picture" });
+   } catch (err) {
+       return res.status(500).json({ message: err.message });
+   }
+};
+
 
 
 export const getAllUserProfiles = async (req,res)=>{
@@ -209,23 +261,14 @@ export const getAllUserProfiles = async (req,res)=>{
 };
 
 export const downloadProfile = async(req,res)=>{
-   // try{
-      
-   // }catch(err){
-   //     return res.status(500).json({message: err.message});
-   // }
+  const user_id = req.query.id;
 
-   const user_id = req.query.id;
+  const userProfile = await Profile.findOne({userId: user_id})
+    .populate("userId" , "name username email profilePicture");
 
-   // return res.json({"message": "Not implemented"});
+  let outputPath = await convertUserDataTOPDF(userProfile);
 
-   const userProfile = await Profile.findOne({userId: user_id})
-   .populate("userId" , "name username email profilePicture");
-
-   let outputPath = await convertUserDataTOPDF(userProfile);
-
-
-   return res.json({message: `uploads/${outputPath}`});
+  return res.json({message: `uploads/${outputPath}`});
 };
 
 export const sentRequestConnection =async (req,res)=>{
