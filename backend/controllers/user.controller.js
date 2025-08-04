@@ -273,15 +273,20 @@ export const getAllUserProfiles = async (req,res)=>{
    }
 };
 
-export const downloadProfile = async(req,res)=>{
-  const user_id = req.query.id;
+export const downloadProfile = async (req, res) => {
+  try {
+    const user_id = req.query.id;
 
-  const userProfile = await Profile.findOne({userId: user_id})
-    .populate("userId" , "name username email profilePicture");
+    const userProfile = await Profile.findOne({ userId: user_id })
+      .populate("userId", "name username email profilePicture");
 
-  let outputPath = await convertUserDataTOPDF(userProfile);
+    const cloudinaryPdfUrl = await convertUserDataTOPDF(userProfile);
 
-  return res.json({message: `uploads/${outputPath}`});
+    return res.status(200).json({ message: cloudinaryPdfUrl }); // ✅ Use as-is
+  } catch (err) {
+    console.error("❌ Failed to generate PDF:", err.message);
+    return res.status(500).json({ message: "Failed to generate PDF" });
+  }
 };
 
 export const sentRequestConnection =async (req,res)=>{
