@@ -6,17 +6,8 @@ import { cloudinary, storage } from "../cloudConfig.js";
 
 const router = Router();
 
-// const storage = multer.diskStorage({
-//     destination: (req, file , cb)=>{
-//         cb(null , "uploads")
-//     },
-//     filename: (req,file,cb)=>{
-//         cb(null , file.originalname);
-//     }
-// });
 
 const upload = multer({storage});
-// console.log("🚀 Cloudinary Storage Middleware:", storage);
 
 
 router.route("/register").post(register);

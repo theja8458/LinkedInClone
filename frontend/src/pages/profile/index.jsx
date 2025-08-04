@@ -78,9 +78,7 @@ const updateProfilePicture = async (file) => {
 
     const response = await clientServer.post("/update_profile_picture", formData);
 
-    console.log("✅ Upload successful:", response.data);
     dispatch(getAboutUser({ token: localStorage.getItem("token") }));
-    alert("✅ Profile picture updated successfully!");
   } catch (error) {
     console.error("❌ Upload failed:", error.response?.data || error.message);
     alert("Upload failed. Please try again.");
