@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAboutUser, getAllUsers, getConnectionsRequest, getMyConnectionRequest, loginUser, registerUser } from "../../action/authAction";
+import { getAboutUser, getAllUsers, getConnectionsRequest, getMyConnectionRequest, loginUser, registerUser, } from "../../action/authAction";
 
 
 const initialState = {
@@ -98,6 +98,7 @@ const authSlice = createSlice({
       .addCase(getMyConnectionRequest.rejected, (state,action) =>{
         state.message = action.payload;
       })
+      
     }
 });
 

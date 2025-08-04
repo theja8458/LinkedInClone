@@ -60,40 +60,71 @@ export default function ProfilePage() {
 //     return <p>Loading profile...</p>;
 //   }
 
-const updateProfilePicture = async(file) =>{
+const updateProfilePicture = async (file) => {
+  if (!file) {
+    alert("❌ No file selected!");
+    return;
+  }
 
-  const formData = new FormData();
-  formData.append("profile_picture" , file);
-  formData.append("token" , localStorage.getItem("token"));
-  
-  const response = await clientServer.post("/update_profile_data" , formData , {
-    headers:{
-      'Content-Type' : 'multipart/form-data',
+  try {
+    const formData = new FormData();
+    formData.append("profile_picture", file);
+    formData.append("token", localStorage.getItem("token"));
 
+    console.log("📤 FormData entries:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
     }
-  });
 
-  dispatch(getAboutUser({token: localStorage.getItem("token")}));
+    const response = await clientServer.post("/update_profile_picture", formData);
 
-}
+    console.log("✅ Upload successful:", response.data);
+    dispatch(getAboutUser({ token: localStorage.getItem("token") }));
+    alert("✅ Profile picture updated successfully!");
+  } catch (error) {
+    console.error("❌ Upload failed:", error.response?.data || error.message);
+    alert("Upload failed. Please try again.");
+  }
+};
 
-const updateProfileData = async()=>{
-  const request = await clientServer.post("/user_update", {
+
+
+
+
+const updateProfileData = async () => {
+  const formData = new FormData();
+  formData.append("token", localStorage.getItem("token"));
+  formData.append("bio", userProfile.bio || "");
+  formData.append("currentPost", userProfile.currentPost || "");
+
+  const cleanPastWork = Array.isArray(userProfile.pastwork)
+    ? userProfile.pastwork
+    : [];
+  formData.append("pastwork", JSON.stringify(cleanPastWork));
+
+  // Optional: If you're handling education too
+  const cleanEducation = Array.isArray(userProfile.education)
+    ? userProfile.education
+    : [];
+  formData.append("education", JSON.stringify(cleanEducation));
+
+  // const response = await clientServer.post("/update_profile_data", formData, {
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //   },
+  // });
+  // Update the user profile in the Redux store
+
+ 
+
+  await clientServer.post("/user_update", {
     token: localStorage.getItem("token"),
     name: userProfile.userId.name,
   });
 
-  const response = await clientServer.post("/update_profile_data" , {
-    token: localStorage.getItem("token"),
-    bio: userProfile.bio,
-    currentPost: userProfile.currentPost,
-    pastwork: userProfile.pastwork,
+  dispatch(getAboutUser({ token: localStorage.getItem("token") }));
 
-  });
-
-  dispatch(getAboutUser({token: localStorage.getItem("token")}));
-}
-
+};
 
   return (
     <UserLayout>
@@ -105,22 +136,26 @@ const updateProfileData = async()=>{
         <div className={styles.container}>
 
           <div className={styles.backDropContainer}>
-              <label htmlFor="profilePirctureUpload" className={styles.backDrop_overlay}>
-                <p>
-                  Edit
-                </p>
-              </label>
-              <input onChange={(e)=>{
-                updateProfilePicture(e.target.files[0]);
-              }} style={{visibility: "hidden"}} type="file" name="" id="profilePirctureUpload" />
-             <img
-  src={
-    userProfile.userId.profilePicture?.startsWith("http")
-      ? userProfile.userId.profilePicture
-      : `${BASE_URL}/uploads/${userProfile.userId.profilePicture}`
-  }
+              <label htmlFor="profilePictureUpload" className={styles.backDrop_overlay}>
+  <p>Edit</p>
+</label>
+
+<input
+  type="file"
+  id="profilePictureUpload"
+  name="profile_picture"
+  style={{ visibility: "hidden" }}
+  onChange={(e) => {
+    const file = e.target.files[0];
+    updateProfilePicture(file);
+  }}
+/>
+
+          <img
+  src={`${userProfile.userId.profilePicture}?t=${Date.now()}`}
   alt="Profile"
 />
+
 
           </div>
 
@@ -169,9 +204,9 @@ const updateProfileData = async()=>{
                           {post.media !== "" ? (
   <img
     src={
-      post.media.startsWith("http")
-        ? post.media
-        : `${BASE_URL}/uploads/${post.media}`
+      
+        post.media
+
     }
     alt="PostImage"
   />
@@ -218,19 +253,11 @@ const updateProfileData = async()=>{
           </div>
 
 
-          {userProfile !== authState.user && 
-          
-          <div onClick={()=>{
-            updateProfileData();
-          }} className={styles.updateProfileBtn}>
-            Update Profile
-            
-
-
-             </div>
-             
-          
-          }
+         {userProfile !== authState.user  && (
+  <div onClick={updateProfileData} className={styles.updateProfileBtn}>
+    Update Profile
+  </div>
+)}
            
         </div>
         }

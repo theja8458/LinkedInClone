@@ -221,6 +221,31 @@ console.log("📨 Body:", req.body);
   }
 };
 
+export const updateProfilePicture = async (req, res) => {
+  console.log("⚙️ Controller hit: updateProfilePicture");
+   console.log("Headers:", req.headers); // See if it's multipart/form-data
+  console.log("📦 Received File:", req.file); // ← This should work if multer
+   if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+   }
+   try {
+       const { token } = req.body;
+         const user = await User.findOne({ token: token });
+       if (!user) {
+         return res.status(404).json({ message: "User does not exist" });
+       }
+         // multer-storage-cloudinary gives `path` or `url`
+         const cloudinaryUrl = req.file.path || req.file.url;
+         if (cloudinaryUrl) {
+           user.profilePicture = cloudinaryUrl;
+             await user.save();
+             return res.status(200).json({ message: "Profile picture updated" });
+         }
+         return res.status(400).json({ message: "Failed to update profile picture" });
+   } catch (err) {
+       return res.status(500).json({ message: err.message });
+   }
+};
 
 
 

@@ -43,9 +43,7 @@ export default function MyConnectionsPage() {
                   
                   <img
   src={
-    user.userId.profilePicture?.startsWith("http")
-      ? user.userId.profilePicture
-      : `${BASE_URL}/uploads/${user.userId.profilePicture}`
+       user.userId.profilePicture
   }
   alt="profile"
 />

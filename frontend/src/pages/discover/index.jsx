@@ -18,6 +18,10 @@ export default function DiscoverPage() {
        dispatch(getAllUsers());
     }
   }, [])
+
+  if (!authState.all_profiles_fetched) {
+  return <p>Loading profiles...</p>;
+}
   return (
     <UserLayout>
   
@@ -31,15 +35,12 @@ export default function DiscoverPage() {
               <div onClick={()=>{
                router.push(`/view_profile/${user.userId.username}`)
               }} key={user._id} className={styles.userCard}>
-            <img
+<img
   className={styles.userCard_image}
-  src={
-    user.userId.profilePicture?.startsWith("http")
-      ? user.userId.profilePicture
-      : `${BASE_URL}/uploads/${user.userId.profilePicture}`
-  }
+  src={user.userId.profilePicture} // no BASE_URL!
   alt="user profile"
 />
+
 
 
                 <div>

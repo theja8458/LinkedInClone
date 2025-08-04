@@ -45,7 +45,26 @@ export const registerUser = createAsyncThunk(
     }
     }
 );
+ 
+// export const updateProfilePicture = createAsyncThunk(
+//   "user/updateProfilePicture",
+//   async (user, thunkAPI) => {
+//     try {
+//       const formData = new FormData();
+//       formData.append("profile_picture", user.file);
+//       formData.append("token", user.token);
 
+//       // ✅ Let Axios set the Content-Type automatically
+//       const response = await clientServer.post("/update_profile_data", formData);
+
+//       thunkAPI.dispatch(getAboutUser({ token: user.token }));
+
+//       return thunkAPI.fulfillWithValue(response.data);
+//     } catch (err) {
+//       return thunkAPI.rejectWithValue(err.response.data);
+//     }
+//   }
+// );
 
 export const getAboutUser = createAsyncThunk(
   "user/getAboutUser",
@@ -90,7 +109,7 @@ export const sendConnectionRequest = createAsyncThunk(
 
       thunkAPI.dispatch(getConnectionsRequest({token: user.token}));
 
-      return response.fulfillWithValue(response.data);
+      return thunkAPI.fulfillWithValue(response.data);
 
     }catch(err){
       return thunkAPI.rejectWithValue(err.response.data.mesaage);

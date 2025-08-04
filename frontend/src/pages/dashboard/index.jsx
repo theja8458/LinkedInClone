@@ -60,7 +60,7 @@ export default function Dashboard() {
 
         <div className={styles.createPostContainer}>
           
-          <img className={styles.userProfile} src={`${BASE_URL}/uploads/${authState.user.userId.profilePicture}`} alt="" />
+          <img className={styles.userProfile} src={authState.user.userId.profilePicture} alt="" />
           <textarea onChange={(e) => setPostContent(e.target.value)} value={postContent} placeholder={"What's in your mind?"} className={styles.textAreaOfContent} name="" id=""></textarea>
           <label htmlFor="fileUpload">
           <div  className={styles.Fab}>
@@ -82,20 +82,15 @@ export default function Dashboard() {
         <div className={styles.postContainer}>
              
              {postState.posts.map((post) =>{
-               console.log(`${BASE_URL}/uploads/${post.userId.profilePicture}`);
               return (
                 <div key={post._id} className={styles.singleCard}>
                   
                  <div className={styles.singleCard_profileContainer}>
                  <img 
-  src={
-    post.userId.profilePicture?.startsWith("http")
-      ? post.userId.profilePicture
-      : `${BASE_URL}/uploads/${post.userId.profilePicture}`
-  }
-  alt="profile"
-  className={styles.userProfile}
-/>
+                    src={post.userId.profilePicture}
+                    alt="profile"
+                    className={styles.userProfile}
+                  />
                   <div>
                     <div style={{display: "flex" , gap: "1.2rem" , justifyContent: "space-between"}}>
                        <p style={{fontWeight: "bold"}}>{post.userId.name}</p>
@@ -115,16 +110,9 @@ export default function Dashboard() {
 
  
                    <div className={styles.singleCard_image}>
-                   {post.media?.trim() ? (
-  <img
-    src={
-      post.media.startsWith("http")
-        ? post.media
-        : `${BASE_URL}/uploads/${post.media}`
-    }
-    alt="postImage"
-  />
-) : null}
+                   {post.media ? (
+                      <img src={post.media} alt="postImage" />
+                   ) : null}
                    </div>
 
                    <div className={styles.optionsContainer}>
@@ -194,35 +182,24 @@ export default function Dashboard() {
 
           
            <div>
-             {postState.comments.map((postComments,index) =>{
+           {postState.comments.map((postComments,index) =>{
                return(
-                 <div>
-                  
-                  <div className={styles.singleComment} key={postComments._id}>
+                 <div key={postComments._id}>
+                  <div className={styles.singleComment}>
                        <div className={styles.singleComment_profileContainer}>
-                       <img 
-  src={
-    postComments.userId.profilePicture?.startsWith("http")
-      ? postComments.userId.profilePicture
-      : `${BASE_URL}/uploads/${postComments.userId.profilePicture}`
-  }
-  alt="profile"
-  className={styles.userProfile}
-/>
-
+                        <img  src={postComments.userId.profilePicture}
+                    alt="profile"
+                    className={styles.userProfile} />
                        </div>
                        <br />
                        <div>
                        <p style={{fontWeight: "bold" , fontSize: "1.2rem"}}>{postComments.userId.name}</p>
                        <p>@{postComments.userId.username}</p>
                   </div>
-
                  </div>
-
                 <p>
                   {postComments.comment}
                 </p>
-
                </div>
                )
              })}

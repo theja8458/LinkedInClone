@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register,login,  updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest, getUserProfileAndUserBasesOnUsername} from "../controllers/user.controller.js";
+import { register,login,  updateUserProfile, updateProfileData,getUserAndProfile , getAllUserProfiles,downloadProfile , sentRequestConnection , getMyConnectionsRequest , whatAreMyConnections , acceptConnectionRequest, getUserProfileAndUserBasesOnUsername, updateProfilePicture} from "../controllers/user.controller.js";
 import multer from "multer";
 // import { file } from "pdfkit";
 import { cloudinary, storage } from "../cloudConfig.js";
@@ -24,6 +24,7 @@ router.route("/login").post(login);
 router.route("/user_update").post(updateUserProfile);
 router.route("/get_user_and_profile").get(getUserAndProfile);
 router.route("/update_profile_data").post(upload.single("profile_picture"), updateProfileData);
+router.route("/update_profile_picture").post(upload.single("profile_picture"), updateProfilePicture);
 router.route("/user/get_all_user_profiles").get(getAllUserProfiles);
 router.route("/user/download_resume").get(downloadProfile);
 router.route("/user/send_connection_request").post(sentRequestConnection);
