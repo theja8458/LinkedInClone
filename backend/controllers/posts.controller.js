@@ -7,26 +7,34 @@ export const runningCheck = async (req,res)=>{
 
 
 export const createPost = async (req, res) => {
-  const { token } = req.body;
+  const { token, body } = req.body;
 
   try {
     const user = await User.findOne({ token });
     if (!user) {
-      return res.status(404).json({ message: "User does not exist" });
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("🧾 File received:", req.file); // ✅ This will include Cloudinary info
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
     const post = new Post({
       userId: user._id,
-      body: req.body.body,
-      media: req.file?.path || "", // ✅ Cloudinary's URL
-      fileType: req.file?.mimetype?.split("/")[1] || "",
+      body: body,
+      media: req.file.path, // ✅ Cloudinary URL
+      fileType: req.file.mimetype.split("/")[1],
     });
 
     await post.save();
 
-    return res.status(200).json({ message: "Post Created" });
+    return res.status(200).json({ message: "Post Created", post });
+
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    console.error("❌ createPost error:", err);
+    return res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -126,7 +134,7 @@ export const get_comments_by_post = async (req,res)=>{
     }
 
     const comments = await Comment.find({postId: post_id})
-    .populate("userId","name username profilePicture");
+    .populate("userId","name username");
 
     return res.json(comments.reverse());
    }catch(err){
