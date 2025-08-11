@@ -24,7 +24,10 @@ export const createPost  = createAsyncThunk(
           
             const formData = new FormData();
 
-            formData.append("file", file); // ✅
+            // formData.append("media", file); // ✅
+            if (file) { // ✅ Only append if a file exists
+                formData.append("media", file);
+            }
 formData.append("body", body);
 formData.append("token", localStorage.getItem("token"));
 

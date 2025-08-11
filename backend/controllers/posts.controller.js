@@ -15,17 +15,13 @@ export const createPost = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("🧾 File received:", req.file); // ✅ This will include Cloudinary info
-
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
+    console.log("🧾 File received:", req.file);
 
     const post = new Post({
       userId: user._id,
-      body: body,
-      media: req.file.path, // ✅ Cloudinary URL
-      fileType: req.file.mimetype.split("/")[1],
+      body,
+      media: req.file ? req.file.path : null,
+      fileType: req.file ? req.file.mimetype.split("/")[1] : null,
     });
 
     await post.save();

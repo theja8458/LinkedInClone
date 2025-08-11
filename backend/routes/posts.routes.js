@@ -47,16 +47,17 @@ router.route("/").get(runningCheck);
 //   }
 // });
 
-router.route("/post").post((req, res, next) => {
-  upload.single("media")(req, res, function (err) {
-    if (err) {
-      console.error("🛑 Multer/Cloudinary error:", err);
-      return res.status(500).json({ message: "Upload failed", error: err.message });
-    }
-    next();
-  });
-}, createPost);
+// router.route("/post").post((req, res, next) => {
+//   upload.single("media")(req, res, function (err) {
+//     if (err) {
+//       console.error("🛑 Multer/Cloudinary error:", err);
+//       return res.status(500).json({ message: "Upload failed", error: err.message });
+//     }
+//     next();
+//   });
+// }, createPost);
 
+router.route("/post").post(upload.single("media"));
 
 
 router.route("/posts").get(getAllPosts);
