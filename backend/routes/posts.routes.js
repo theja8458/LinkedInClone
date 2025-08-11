@@ -57,7 +57,7 @@ router.route("/").get(runningCheck);
 //   });
 // }, createPost);
 
-router.route("/post").post(upload.single("media"));
+router.route("/post").post(upload.single("media") , createPost);
 
 
 router.route("/posts").get(getAllPosts);
